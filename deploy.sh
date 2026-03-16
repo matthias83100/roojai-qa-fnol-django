@@ -18,11 +18,11 @@ pip install -r requirements.txt
 
 # 3. Collect static files
 echo "Collecting static files..."
-python manage.py collectstatic --noinput
+python3 manage.py collectstatic --noinput
 
 # 4. Run database migrations
 echo "Running database migrations..."
-python manage.py migrate
+python3 manage.py migrate
 
 # 5. Setup Nginx configuration
 echo "Configuring Nginx..."
