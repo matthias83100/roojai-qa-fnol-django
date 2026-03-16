@@ -7,7 +7,9 @@ echo "--- Starting Deployment Process ---"
 
 # 1. Update system and install Nginx
 echo "Installing Nginx..."
-sudo apt-get update
+# We use || true because sometimes unrelated repositories (like Yarn) might have GPG issues
+# that shouldn't block installing Nginx.
+sudo apt-get update || true
 sudo apt-get install -y nginx
 
 # 2. Install Python dependencies
