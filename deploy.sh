@@ -41,8 +41,8 @@ fi
 # 6. Start Gunicorn
 echo "Starting Gunicorn..."
 # Kill any existing gunicorn processes to avoid socket conflicts
-pkill gunicorn || true
-gunicorn -c gunicorn_config.py fnol_qa.wsgi:application &
+pkill -f gunicorn || true
+python3 -m gunicorn -c gunicorn_config.py fnol_qa.wsgi:application &
 sleep 2 # Give gunicorn a moment to start
 
 if pgrep -f gunicorn > /dev/null; then
