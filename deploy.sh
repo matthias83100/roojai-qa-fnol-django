@@ -20,9 +20,15 @@ pip install -r requirements.txt
 echo "Collecting static files..."
 python3 manage.py collectstatic --noinput
 
-# 4. Run database migrations
+# 4. Run database migrations and initialize data
 echo "Running database migrations..."
 python3 manage.py migrate
+
+echo "Initializing test users (Top Manager, Managers, Agents)..."
+python3 manage.py init_test_data
+
+echo "Generating initial mock data..."
+python3 manage.py generate_mock_data
 
 # 5. Setup Nginx configuration
 echo "Configuring Nginx..."
