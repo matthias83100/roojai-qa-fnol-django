@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+echo "--- Starting Deployment Process ---"
+
+# 1. Update system and install Nginx
+echo "Installing Nginx..."
+sudo apt-get update
+sudo apt-get install -y nginx
+
+# 2. Install Python dependencies
+echo "Installing Python dependencies..."
+pip install -r requirements.txt
+
+# 3. Collect static files
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
+# 4. Run database migrations
+echo "Running database migrations..."
+python manage.py migrate
+
+# 5. Setup Nginx configuration
+echo "Configuring Nginx..."
+sudo cp nginx.conf /etc/nginx/nginx.conf
+sudo service nginx restart
+
+# 6. Start Gunicorn
+echo "Starting Gunicorn..."
+gunicorn -c gunicorn_config.py fnol_qa.wsgi:application &
+
+echo "--- Deployment Complete ---"
+echo "Your app should be available on the forwarded port 8080."
+echo "Check GitHub Codespaces 'Ports' tab to find the URL."
