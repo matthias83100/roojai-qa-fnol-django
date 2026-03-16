@@ -27,11 +27,30 @@ python manage.py migrate
 # 5. Setup Nginx configuration
 echo "Configuring Nginx..."
 sudo cp nginx.conf /etc/nginx/nginx.conf
-sudo service nginx restart
+
+# Check Nginx configuration syntax
+echo "Testing Nginx configuration..."
+if sudo nginx -t; then
+    echo "Nginx configuration is valid. Restarting..."
+    sudo service nginx restart
+else
+    echo "Error: Nginx configuration is invalid. Please check nginx.conf."
+    exit 1
+fi
 
 # 6. Start Gunicorn
 echo "Starting Gunicorn..."
+# Kill any existing gunicorn processes to avoid socket conflicts
+pkill gunicorn || true
 gunicorn -c gunicorn_config.py fnol_qa.wsgi:application &
+sleep 2 # Give gunicorn a moment to start
+
+if pgrep -f gunicorn > /dev/null; then
+    echo "Gunicorn started successfully."
+else
+    echo "Error: Gunicorn failed to start. Check logs."
+    exit 1
+fi
 
 echo "--- Deployment Complete ---"
 echo "Your app should be available on the forwarded port 8080."
